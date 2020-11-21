@@ -1,0 +1,53 @@
+10 REM ********************
+20 REM ***              ***
+30 REM *** ZAHLENDREHER ***
+40 REM ***              ***
+50 REM ********************
+60 REM
+70 GOSUB 1000
+80 GOSUB 2000
+90 GOSUB 3000
+100 END
+1000 REM
+1010 REM *** VORBEREITUNGEN ***
+1020 REM
+1030 DIM PO (9)
+1040 FOR I=0 TO 9:PO (I)=I:NEXT I
+1050 FOR I=0 TO 9
+1060 :X=INT(RND(1)*10)
+1070 :H=PO(I)
+1080 :PO(I)=PO(X)
+1090 :PO(X)=H
+1100 NEXT I
+1110 RETURN
+2000 REM
+2010 REM *** SPIEL ***
+2020 REM
+2030 PRINT "{clear}{down*2}";TAB(13);"zahlendreher"
+2040 PRINT "{down*3}position: 0 1 2 3 4 5 6 7 8 9"
+2050 PRINT TAB(10);"----------------------"
+2060 PRINT "liste:{space*3}";
+2070 FOR I=0 TO 9
+2080 :PRINT PO(I);"{left}";
+2090 NEXT I
+2100 FOR I=0 TO 9:IF PO(I)=I THEN NEXT I:RETURN
+2110 PRINT:INPUT "{down*2}ab welcher position drehen (0-9) ";AN$
+2120 AN=VAL(AN$)
+2130 IF AN<0 OR AN>9 THEN GOTO 2110
+2140 MI=INT((9-AN)/2)
+2150 FOR I=AN TO AN+MI
+2160 :H=PO(I)
+2170 :PO(I)=PO(9+AN-I)
+2180 :PO(9+AN-I)=H
+2190 NEXT I
+2200 DG=DG+1
+2210 GOTO 2030
+3000 REM
+3010 REM *** ENDE ***
+3020 REM
+3030 PRINT:PRINT "{down*2}finito !"
+3040 PRINT "{down*2}dafuer benoetigten sie";DG;"durchgaenge."
+3050 PRINT
+3060 IF DG<11 THEN PRINT "sehr gut !":RETURN
+3070 IF DG<21 THEN PRINT "na ja.":RETURN
+3080 PRINT "ueben sie mal fleissig !":RETURN
