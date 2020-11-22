@@ -1,0 +1,104 @@
+10 REM ******************
+20 REM ***            ***
+30 REM *** FASSFARBEN ***
+40 REM ***            ***
+50 REM ******************
+60 REM
+70 GOSUB 1000
+80 GOSUB 2000
+90 GOSUB 3000
+100 END
+1000 REM
+1010 REM *** VORBEREITUNGEN ***
+1020 REM
+1030 DIM FE(3,6)
+1040 DIM FA$(6)
+1050 FOR I=0 TO 6:READ FA$(i):NEXT I
+1060 DATA "{gray}","{black}","{red}","{light green}","{yellow}","{cyan}","{white}"
+1070 FOR I=1 TO 3
+1080 :FOR J=1 TO 6
+1090 : FE(I,J)=J
+1100 :NEXT J
+1110 NEXT I
+1120 FE(3,6)=0
+1130 LX=3:LY=6
+1140 PRINT "{clear}"
+1150 FOR I=0 TO 18 STEP 3
+1160 :POKE 211,11:POKE 214,I:SYS 58640
+1170 :PRINT "{reverse on}DDDDDDDDDDDDDDDDDDD"
+1180 NEXT I
+1190 FOR I=1 TO 3:GOSUB 1800:NEXT I
+1200 POKE 211,0:POKE 214,20:SYS 58640
+1210 FOR I=1 TO 3
+1220 :PRINT "{reverse off}{space*35}"
+1230 NEXT I
+1240 POKE 211,5:POKE 214,20:SYS 58640
+1250 PRINT "{black}<<< das ist das fertige muster >>>"
+1260 FOR PA=1 TO 1500:NEXT PA
+1270 PRINT "{up}{reverse off}{space*27}"
+1280 PRINT "{up}{black}{space*3}<<< ich mische jetzt das brett >>>{space*3}"
+1290 FOR N=1 TO INT(RND(1)*10)+20
+1300 :IF LX=1 OR LX=3 THEN RX=2:GOTO 1310
+1310 :RX=INT(RND(1)*2)*2+1
+1320 :FOR L=1 TO INT(RND(1)*5)+1
+1330 : FOR M=1 TO 6
+1340 :  FE(RX,M-1)=FE(RX,M)
+1350 : NEXT M
+1360 : FE(RX,6)=FE(RX,0):I=RX
+1370 :NEXT L:GOSUB 1800
+1380 :FE(LX,LY)=FE(RX,LY):FE(RX,LY)=0
+1390 :I=LX:J=LY:GOSUB 1840
+1400 :LX=RX
+1410 :I=LX:J=LY:GOSUB 1840
+1420 NEXT N
+1430 RETURN
+1800 FOR J=1 TO 6
+1810 :GOSUB 1840
+1820 NEXT J
+1830 RETURN
+1840 PRINT FA$(FE(I,J));:IF J=0 THEN J=2
+1850 POKE 211,(I+1)*6:POKE 214,J*3-2:SYS 58640
+1860 PRINT "{reverse on}{space*5}{reverse off}{down}{left*5}";
+1870 PRINT "{reverse on}{space*5}";
+1880 RETURN
+2000 REM
+2010 REM *** SPIEL ***
+2020 REM
+2030 POKE 211,0:POKE 214,20:SYS 58640
+2040 PRINT "{reverse off}{space*39}"
+2050 PRINT "{up}{black}{space*6}{reverse on}{space*2}1 = rollen der spalte 1{space*3}"
+2060 PRINT TAB(6);"{reverse on}{space*2}2 = rollen der spalte 2{space*3}"
+2070 PRINT TAB(6);"{reverse on}{space*2}3 = rollen der spalte 3{space*3}"
+2080 PRINT TAB(6);"{reverse on}{space}f1 = n.links f3 = n.rechts ";
+2090 GET A$:IF A$="" THEN 2090
+2100 IF A$="1" OR A$="2" OR A$="3" THEN GOTO 2250
+2110 IF A$="{f1}" THEN GOTO 2140
+2120 IF A$="{f3}" THEN GOTO 2200
+2130 GOTO 2090
+2140 RX=LX-1
+2150 IF RX=0 THEN GOTO 2090
+2160 FE(LX,LY)=FE(RX,LY):FE(RX,LY)=0
+2170 I=LX:J=LY:GOSUB 1840
+2180 LX=RX:I=LX:J=LY:GOSUB 1840
+2190 GOTO 2290
+2200 RX=LX+1:IF RX=4 THEN GOTO 2090
+2210 FE(LX,LY)=FE(RX,LY):FE(RX,LY)=0
+2220 I=LX:J=LY:GOSUB 1840
+2230 LX=RX:I=LX:J=LY:GOSUB 1840
+2240 GOTO 2290
+2250 RX=VAL(A$)
+2260 FOR M=1 TO 6: FE(RX,M-1)=FE(RX,M):NEXT M
+2270 FE(RX,6)=FE(RX,0):I=RX:GOSUB 1800
+2280 IF RX=LX THEN LY=LY-1:IF LY=0 THEN LY=6
+2290 FE(LX,LY)=6
+2300 FOR I=1 TO 6
+2310 :IF FE(1,I)=FE(2,I) AND FE(2,I)=FE(3,I) THEN NEXT I:RETURN
+2320 FA(LX,LY)=0
+2330 GOTO 2090
+3000 REM
+3010 REM *** ENDE ***
+3020 REM
+3030 PRINT "{clear}{down*2}vielen dank fuer dieses spiel !"
+3040 PRINT "{down}beehren sie uns bald wieder."
+3050 PRINT "aut wiedersehen."
+3060 RETURN
