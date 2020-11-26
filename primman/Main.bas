@@ -1,0 +1,93 @@
+10 REM ****************
+20 REM ***          ***
+30 REM *** PRIM-MAN ***
+40 REM ***          ***
+50 REM ****************
+60 REM
+70 GOSUB 1000
+80 GOSUB 2000
+90 GOSUB 3000
+100 END
+1000 REM
+1010 REM *** VORBEREITUNGEN ***
+1020 REM
+1030 DIM LI(50)
+1040 FOR I=1 TO 50
+1050 :LI(I)=I
+1060 NEXT I
+1070 PRINT "{clear}{down*2}wie viele zahlen soll die liste enthal-"
+1080 INPUT "ten (1-50) ";AN
+1090 IF AN<1 OR AN>50 THEN GOTO 1070
+1100 NU=AN
+1110 RETURN
+2000 REM
+2010 REM *** SPIEL ***
+2020 REM
+2030 PRINT "{clear}{down*2}";TAB(12);"prim-man"
+2040 PRINT "{down*2}hier ist die liste:"
+2050 PRINT
+2060 FOR I=1 TO NU
+2070 :IF LI(I)=0 THEN PRINT "{space*3}";
+2080 :IF LI(I)<10 THEN PRINT " ";
+2090 :IF LI(I) THEN PRINT I;
+2100 NEXT I
+2110 IF NU=1 THEN GOTO 2480
+2120 FOR I=2 TO NU
+2130 :IF LI(I)=0 THEN GOTO 2460
+2140 :FOR J=1 TO I
+2150 : IF LI(J)=0 THEN GOTO 2450
+2160 : IF J=I THEN GOTO 2450
+2170 : IF LI(I)/J<>INT(LI(I)/J) THEN GOTO 2450
+2180 : POKE 211,0:POKE 214,13:SYS 58640
+2190 : PRINT "die betraege :{space*2}computer:";CO
+2200 : PRINT "{space*21}sie: ";SI
+2210 : AN=0
+2220 : INPUT "{down}welche zahl wollen sie ";AN
+2230 : IF AN<1 OR AN>NU THEN GOTO 2220
+2240 : IF LI(AN) AND AN=INT(AN) THEN GOTO 2270
+2250 : PRINT "diese zahl ist nicht moeglich !{up*2}"
+2260 : GOTO 2220
+2270 : SC=0
+2280 : IF AN=1 THEN GOTO 2330
+2290 : FOR K=1 TO AN
+2300 :  IF LI(K)=0 THEN GOTO 2325
+2310 :  IF K=AN THEN GOTO 2325
+2320 :  IF AN/K=INT(AN/K) THEN SC=SC+K
+2325 : NEXT K
+2330 : IF SC<>0 THEN GOTO 2370
+2340 : PRINT "geht leider nicht."
+2350 : PRINT "fuer mich muss etwas uebrigbleiben."
+2360 : GOTO 2220
+2370 : LI(AN)=0
+2380 : SI=SI+AN
+2390 : CO=CO+SC
+2400 : FOR K=1 TO AN
+2410 :  IF LI(K)=0 THEN GOTO 2430
+2420 :  IF AN/K=INT(AN/K) THEN LI(K)=0
+2430 : NEXT K
+2440 : GOTO 2030
+2450 :NEXT J
+2460 NEXT I
+2470 RETURN
+2480 PRINT "{down*2}sie koennen nichts mehr nehmen ..."
+2490 PRINT "{down}weiter mit <return> !"
+2500 GET A$
+2510 IF A$<>CHR$(13) THEN GOTO 2500
+2520 LI(1)=0
+2530 RETURN
+3000 REM
+3010 REM *** ENDE ***
+3020 REM
+3030 PRINT "{clear}{down*6}das spiel ist beendet !"
+3040 CO=0
+3050 FOR I=1 TO NU
+3060 :CO=CO+I
+3070 NEXT I
+3080 CO=CO-SI
+3090 PRINT "{down}{space*5}computer:";CO
+3100 PRINT "{space*10}sie:";SI
+3110 PRINT "============================"
+3120 IF CO>SI THEN PRINT "ich habe gewonnen !"
+3130 IF CO<SI THEN PRINT "sie haben mich besiegt !"
+3140 IF CO=SI THEN PRINT "sie haben ein unentschieden geschafft !"
+3150 RETURN
