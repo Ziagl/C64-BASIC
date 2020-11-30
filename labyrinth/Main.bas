@@ -1,0 +1,184 @@
+10 REM *****************
+20 REM ***           ***
+30 REM *** LABYRINTH ***
+40 REM ***           ***
+50 REM *****************
+60 REM
+70 GOSUB 1000
+80 GOSUB 2100
+90 GOSUB 3000
+100 END
+1000 REM
+1010 REM *** VORBEREITUNGEN ***
+1020 REM
+1030 DIM MA(19,11,4)
+1040 DEF FN R(X)=INT(RND(1)*X)+1
+1050 RX=FN R(19):RY=FN R(11)
+1060 PRINT "{clear}"
+1070 PRINT "{reverse on}{gray*2}{space*39}"
+1080 FOR I=1 TO 11
+1090 :PRINT "{reverse on}{space}{reverse off}{space}{reverse on}{space}{reverse off}{space}{reverse on}{space}{reverse off}{space}{reverse on}{space}";
+1100 :PRINT "{reverse off}{space}{reverse on}{space}{reverse off}{space}{reverse on}{space}{reverse off}{space}{reverse on}{space}{reverse off}";
+1110 :PRINT "{space}{reverse on}{space}{reverse off}{space}{reverse on}{space}{reverse off}{space}{reverse on}{space}{reverse off}{space}";
+1120 :PRINT "{reverse on}{space}{reverse off}{space}{reverse on}{space}{reverse off}{space}{reverse on}{space}{reverse off}{space}{reverse on}{space}";
+1130 :PRINT "{reverse off}{space}{reverse on}{space}{reverse off}{space}{reverse on}{space}{reverse off}{space}{reverse on}{space}{reverse off}";
+1140 :PRINT "{space}{reverse on}{space}{reverse off}{space}{reverse on}{space}{reverse off}{space}{reverse on}{space}"
+1150 :PRINT "{reverse on}{space*39}"
+1160 NEXT I
+1170 PRINT "{black}{space*3}<<< ich baue nun das lager auf >>>"
+1180 CN=1:C=0
+1190 R=1:L=1
+1200 O=1:U=1
+1210 IF RX<19 THEN R=-(MA(RX+1,RY,0)>0)
+1220 IF RX>1 THEN L=-(MA(RX-1,RY,0)>0)
+1230 IF RY<11 THEN U=-(MA(RX,RY+1,0)>0)
+1240 IF RY>1 THEN O=-(MA(RX,RY-1,0)>0)
+1250 C=L+R+O+U
+1260 IF C=4 OR (C>2 AND FN  R(10)<3) THEN GOTO 1720
+1270 ON FN R(4) GOTO 1300,1400,1500,1600
+1300 IF R THEN GOTO 1270
+1310 POKE 211,RX+RX:POKE 214,RY+RY-1:SYS 58640
+1320 PRINT "{reverse off}{space}";
+1330 MA(RX,RY,0)=MA(RX,RY,0)+1
+1340 MA(RX,RY,1)=1
+1350 RX=RX+1
+1360 MA(RX,RY,3)=1
+1370 MA(RX,RY,0)=MA(RX,RY,0)+1
+1380 GOTO 1700
+1400 IF U THEN GOTO 1270
+1410 POKE 211,RX+RX-1:POKE 214,RY+RY:SYS 58640
+1420 PRINT "{reverse off}{space}";
+1430 MA(RX,RY,0)=MA(RX,RY,0)+1
+1440 MA(RX,RY,2)=1
+1450 RY=RY+1
+1460 MA(RX,RY,4)=1
+1470 MA(RX,RY,0)=MA(RX,RY,0)+1
+1480 GOTO 1700
+1500 IF L THEN GOTO 1270
+1510 POKE 211,RX+RX-2:POKE 214,RY+RY-1:SYS 58640
+1520 PRINT "{reverse off}{space}";
+1530 MA(RX,RY,0)=MA(RX,RY,0)+1
+1540 MA(RX,RY,3)=1
+1550 RX=RX-1
+1560 MA(RX,RY,1)=1
+1570 MA(RX,RY,0)=MA(RX,RY,0)+1
+1580 GOTO 1700
+1600 IF O THEN GOTO 1270
+1610 POKE 211,RX+RX-1:POKE 214,RY+RY-2:SYS 58640
+1620 PRINT "{reverse off}{space}";
+1630 MA(RX,RY,0)=MA(RX,RY,0)+1
+1640 MA(RX,RY,4)=1
+1650 RY=RY-1
+1660 MA(RX,RY,2)=1
+1670 MA(RX,RY,0)=MA(RX,RY,0)+1
+1700 IF MA(RX,RY,0)=1 THEN CN=CN+1:IF CN=209 THEN GOTO 1800
+1710 GOTO 1190
+1720 RX=FN R(19):RY=FN R(11)
+1730 IF MA(RX,RY,0)<>0 THEN GOTO 1190
+1740 RX=RX+1:IF RX>19 THEN RX=1:RY=RY+1:IF RY>11 THEN RY=1
+1750 GOTO 1730
+1800 PRINT "{clear}{white}";
+1810 PRINT "{reverse on}{space*40}";
+1820 FOR I=1 TO 10
+1830 :PRINT "{reverse on}{space}{reverse off}{space*38}{reverse on}{space}";
+1840 :PRINT "{reverse on}{space}{reverse off}{space*38}{reverse on}{space}";
+1850 NEXT I
+1860 PRINT "{reverse on}{space}{reverse off}{space*38}{reverse on}{space}";
+1870 PRINT "{reverse on}{space*40}"
+1880 PX=1:PY=FN R(11)
+1890 POKE 211,PX+PX-1:POKE 214,PY+PY-1:SYS 58640
+1900 PRINT "{reverse off}{gray}Q";
+1910 WY=FN R(11)
+1920 POKE 211,38:POKE 214,WY+WY-1:SYS 58640
+1930 PRINT "{black}{reverse on}{space}";
+1940 MX=19:MY=WY
+1950 POKE 211,37:POKE 214,MY+MY-1:SYS 58640
+1960 PRINT "{purple}Z";
+1970 FOR I=1 TO 19
+1980 :FOR J=1 TO 11
+1990 : MA(I,J,0)=0
+2000 :NEXT J
+2010 NEXT I
+2020 POKE 211,2:POKE 214,24:SYS 58640
+2030 PRINT "{reverse on}{light blue}{space}j=links{space*2}k=rechts{space*2}i=auf{space*2}m=ab ";
+2040 RETURN
+2100 REM
+2110 REM *** SPIEL ***
+2120 REM
+2130 GET TA$
+2150 IF TA$="" THEN GOTO 2130
+2160 IF TA$="k" THEN GOTO 2250
+2170 IF TA$="m" THEN GOTO 2300
+2180 IF TA$="j" THEN GOTO 2350
+2190 IF TA$="i" THEN GOTO 2400
+2200 GOTO 2500
+2250 IF MA(PX,PY,1) THEN X2=PX+1:Y2=PY:GOTO 2450
+2260 FOR K=-2 TO 0
+2270 :POKE 211,PX+PX:POKE 214,PY+PY+K:SYS 58640
+2280 :PRINT "{reverse on}{white}{space}"
+2290 NEXT K:GOTO 2500
+2300 IF MA(PX,PY,2) THEN X2=PX:Y2=PY+1:GOTO 2450
+2310 FOR K=-2 TO 0
+2320 :POKE 211,PX+PX+K:POKE 214,PY+PY:SYS 58640
+2330 :PRINT "{reverse on}{white}{space}"
+2340 NEXT K:GOTO 2500
+2350 IF MA(PX,PY,3) THEN X2=PX-1:Y2=PY:GOTO 2450
+2360 FOR K=-2 TO 0
+2370 :POKE 211,PX+PX-2:POKE 214,PY+PY+K:SYS 58640
+2380 :PRINT "{reverse on}{white}{space}"
+2390 NEXT K:GOTO 2500
+2400 IF MA(PX,PY,4) THEN X2=PX:Y2=PY-1:GOTO 2450
+2410 FOR K=-2 TO 0
+2420 :POKE 211,PX+PX+K:POKE 214,PY+PY-2:SYS 58640
+2430 :PRINT "{reverse on}{white}{space}"
+2440 NEXT K:GOTO 2500
+2450 POKE 211,PX+PX-1:POKE 214,PY+PY-1:SYS 58640
+2460 PRINT "{reverse off}{space}";
+2470 PX=X2:PY=Y2
+2480 POKE 211,PX+PX-1:POKE 214,PY+PY-1:SYS 58640
+2490 PRINT "{reverse off}{gray}Q";
+2500 IF PX=19 AND PY=WY THEN WI=-1:RETURN
+2510 IF PX<>MX OR PY<>MY THEN GOTO 2560
+2520 :POKE 211,MX+MX-1:POKE 214,MY+MY+1:SYS 58640
+2530 :PRINT "{reverse off}{red}Z";
+2540 :WI=0
+2550 :RETURN
+2560 ON FN R(4) GOTO 2570,2580,2590,2600
+2570 IF MX<PX THEN GOTO 2620
+2580 IF MY<PY THEN GOTO 2660
+2590 IF MX>PX THEN GOTO 2700
+2600 IF MY>PY THEN GOTO 2740
+2610 GOTO 2570
+2620 IF MX=19 THEN GOTO 2660
+2630 IF MA(MX,MY,0)>5 THEN MA(MX,MY,0)=0:GOTO 2650
+2640 IF MA(MX,MY,1)=0 THEN GOTO 2660
+2650 X2=MX+1:Y2=MY:GOTO 2800
+2660 IF MY=11 THEN GOTO 2700
+2670 IF MA(MX,MY,0)>5 THEN MA(MX,MY,0)=0:GOTO 2690
+2680 IF MA(MX,MY,2)=0 THEN GOTO 2700
+2690 X2=MX:Y2=MY+1:GOTO 2800
+2700 IF MX=1 THEN GOTO 2740
+2710 IF MA(MX,MY,0)>5 THEN MA(MX,MY,0)=0:GOTO 2730
+2720 IF MA(MX,MY,3)=0 THEN GOTO 2740
+2730 X2=MX-1:Y2=MY:GOTO 2800
+2740 IF MY=1 THEN GOTO 2620
+2750 IF MA(MX,MY,0)>5 THEN MA(MX,MY,0)=0:GOTO 2770
+2760 IF MA(MX,MY,4)=0 THEN GOTO 2620
+2770 X2=MX:Y2=MY-1
+2800 POKE 211,MX+MX-1:POKE 214,MY+MY-1:SYS 58640
+2810 PRINT "{reverse off}{space}";
+2820 MX=X2:MY=Y2
+2830 POKE 211,MX+MX-1:POKE 214,MY+MY-1:SYS 58640
+2840 PRINT "{reverse on}{red}Z";
+2850 MA(MX,MY,0)=MA(MX,MY,0)+1
+2860 IF PX=19 AND PY=WY THEN WI=-1:RETURN
+2870 IF PX=MX AND PY=MY THEN WI=0:RETURN
+2880 GOTO 2130
+3000 REM
+3010 REM *** ENDE ***
+3020 REM
+3030 IF WI THEN GOTO 3060
+3040 PRINT "{clear}{light blue}{down*3}leider hat sie der drache erwischt."
+3050 RETURN
+3060 PRINT "{clear}{light blue}{down*3}sie haben gewonnen."
+3070 RETURN
