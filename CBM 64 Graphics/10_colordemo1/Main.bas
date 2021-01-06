@@ -19,7 +19,7 @@
 190 for d=1 to 1000:next:rem * delay loop
 200 rem * loop to set back and fore colours
 210 for i=0 to 100
-220 rem * set current character colour
+220 rem * set current character colour 
 230 poke 646,(i+4) and 15
 240 if (i and 3)=0 then print a1$
 250 if (i and 3)=1 then print a2$
