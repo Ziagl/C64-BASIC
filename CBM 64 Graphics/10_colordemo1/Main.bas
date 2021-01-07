@@ -1,44 +1,57 @@
-10 rem you can remove all rems
-20 rem * set to lower case and set variables
-30 poke 53272,23:zz=53281:x=54272
-40 print "         ********    demo    ********"
-50 rem * switch to extended colour mode
-60 poke 53265, peek (53265) or 64
-70 for d=1 to 500:next:rem * delay loop
-80 rem a2$="shift spaces four shift spaces"
-90 rem a4$="shift spaces changing colours shift spaces"
-100 a1$="commodore color power on you 64"
-110 a2$="{sh space}{dark gray}{sh space}"
-120 a3$="          background             "
-130 a4$="{sh space}{pink}{sh space}"
-140 rem * set background colour registers
-150 poke zz,9
-160 poke zz+1,4
-170 poke zz+2,7
-180 poke zz+3,0
-190 for d=1 to 1000:next:rem * delay loop
-200 rem * loop to set back and fore colours
-210 for i=0 to 100
-220 rem * set current character colour 
-230 poke 646,(i+4) and 15
-240 if (i and 3)=0 then print a1$
-250 if (i and 3)=1 then print a2$
-260 if (i and 3)=2 then print a3$
-270 if (i and 3)=4 then print a4$
-280 poke zz,i
-290 poke zz+1,i+2
-300 poke zz+2,i+3
-310 poke zz+3,i+1
-320 for d=1 to 100:next
-330 next
-340 for g=0 to 3:poke zz+g,15:next
-350 for d=0 to 3000:next
-360 for i=0 to 70
-370 z=zz+(i and 3):rem * draws moving bars
-380 poke z,12:rem * draw bar
-390 for d=1 to 200:next
-400 poke z,15:rem * undraw bars
-410 next
-420 rem * reset colour and exit
-430 poke 53272,21:poke 53265, peek(53265) and 191
-440 end
+00 rem init multi-colour mode
+10 sc=12:pc=6
+20 for i=1024 to 2023
+30 poke i,sc+pc*16
+40 next
+50 for i=8192 to 16191
+60 poke i,0
+70 next i
+80 rem poke 53265, peek(53265) or 32
+90 rem poke 53272, peek(53272) or 8
+100 rem poke 53270, peek(53270) or 16
+999 rem draw point 
+1000 def fn p(zz)=8192+int(x/8)*8+int(y/8)*320+(y and 7)
+1010 def fn c(zz)=1024+int(x/8)+int(y/8)*40
+1020 x=5:y=5:rem coordinates of point
+1030 ao=0:rem draw or delete
+1040 pc=1:rem colour to draw point
+1050 if x<0 or x>319 then 1160
+1060 if y<0 or y>199 then 1160
+1070 if ao=1 then 1110
+1080 bi=7-(x and 7)
+1090 poke fn p(0),peek(fn p(0)) or 2^bi
+1100 goto 1130
+1110 bi=7-(x and 7)
+1120 poke fn p(0),peek(fn p(0)) and 255-(2^bi)
+1130 sc=peek(fn c(0)) and 15
+1140 col=sc+pc*16
+1150 poke fn c(0),col
+1160 return
+1999 rem draw line
+2000 x1=10:y1=10:rem point 1
+2010 x2=40:y2=40:rem point 2
+2020 ao=0:pc=1:rem draw or delete and line color
+2030 xd=x2-x1
+2040 yd=y2-y1
+2050 a0=1;a1=1
+2060 if yd<0 then a0=-1
+2070 if xd<0 then a1=-1
+2080 xe=abs(xd):ye=abs(yd):d1=xe-ye
+2090 if d1>=0 then 2130
+2100 s0=-1,s1=0:lg=ye:sh=xe
+2110 if yd>0 then s0=1
+2120 goto 2150
+2130 s0=0:s1=-1:lg=xe:sh=ye
+2140 if xd>=0 then s1=1
+2150 tt=lg:ts=sh:ud=lg-sh:ct=sh-lg/2
+2160 d=0
+2170 x=x1:y=y1
+2180 gosub 1050
+2190 if ct>0 then 2220
+2200 ct=ct+ts:x=x+s1:y=y+s0
+2210 goto 2230
+2220 ct=ct-ud:x=x+a1:y=y+a0
+2230 tt=tt-1
+2240 if tt<=0 then 2260
+2250 goto 2180
+2260 return
